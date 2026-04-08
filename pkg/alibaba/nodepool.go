@@ -288,3 +288,28 @@ func UpdateNodePoolConfig(ctx context.Context, client services.ClustersClientInt
 
 	return nil
 }
+
+func UpgradeNodePoolOS(
+    ctx context.Context,
+    client services.ClustersClientInterface,
+    clusterID string,
+    nodePoolID string,
+    imageID string,
+    useReplace *bool,
+) error {
+    req := &cs.UpgradeClusterNodepoolRequest{
+        ImageId: tea.String(imageID),
+    }
+    if useReplace != nil {
+        req.UseReplace = useReplace
+    }
+
+    resp, err := client.UpgradeClusterNodepool(ctx, &clusterID, &nodePoolID, req)
+    if err != nil {
+        return err
+    }
+    if resp == nil || resp.Body == nil {
+        return errors.New("received empty response from upgrade nodepool")
+    }
+    return nil
+}

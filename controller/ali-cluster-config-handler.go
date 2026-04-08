@@ -594,6 +594,28 @@ func (h *Handler) handleUpdateNodePools(
 		if !ok {
 			continue
 		}
+		// OS image update: do this separately from scaling changes
+        if np.ImageID != "" && np.ImageID != unp.ImageID {
+            logrus.Infof(
+                "Upgrading OS image for nodepool [%s] from [%s] to [%s]",
+                np.Name, unp.ImageID, np.ImageID,
+            )
+            err := alibaba.UpgradeNodePoolOS(
+                ctx,
+                h.alibabaClients.clustersClient,
+                configSpec.ClusterID,
+                np.NodePoolID,
+                np.ImageID,
+                np.UseReplace,
+            )
+            if err != nil {
+                failed = append(failed, fmt.Sprintf("nodepool %s os upgrade error: %s", np.Name, err.Error()))
+                continue
+            }
+            changed = true
+            continue
+        }
+
 		if tea.BoolValue(np.EnableAutoScaling) {
 			if !tea.BoolValue(unp.EnableAutoScaling) ||
 				(tea.Int64Value(np.MaxInstances) != tea.Int64Value(unp.MaxInstances)) ||
@@ -670,6 +692,10 @@ func needsUpdate(desired []aliv1.AliNodePool, upstream map[string]aliv1.AliNodeP
 		if !ok {
 			continue
 		}
+		 // OS image drift
+        if np.ImageID != "" && np.ImageID != unp.ImageID {
+            return true
+        }
 
 		if tea.BoolValue(np.EnableAutoScaling) != tea.BoolValue(unp.EnableAutoScaling) {
 			return true
