@@ -143,6 +143,8 @@ type AliNodePool struct {
 	Runtime string `json:"runtime,omitempty"`
 	// RuntimeVersion is the version of the container runtime.
 	RuntimeVersion string `json:"runtimeVersion,omitempty"`
+
+	UseReplace bool `json:"useReplace,omitempty" norman:"noupdate"`
 }
 
 type AliDisk struct {

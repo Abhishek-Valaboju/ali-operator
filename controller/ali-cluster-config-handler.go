@@ -606,7 +606,7 @@ func (h *Handler) handleUpdateNodePools(
                 configSpec.ClusterID,
                 np.NodePoolID,
                 np.ImageID,
-                np.UseReplace,
+                &np.UseReplace,
             )
             if err != nil {
                 failed = append(failed, fmt.Sprintf("nodepool %s os upgrade error: %s", np.Name, err.Error()))

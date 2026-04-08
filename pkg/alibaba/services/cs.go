@@ -26,6 +26,7 @@ type ClustersClientInterface interface {
 	DescribeClusterNodes(ctx context.Context, clusterID *string, request *cs.DescribeClusterNodesRequest) (result *cs.DescribeClusterNodesResponse, err error)
 	RemoveNodePoolNodes(ctx context.Context, clusterID *string, nodePoolID *string, request *cs.RemoveNodePoolNodesRequest) (result *cs.RemoveNodePoolNodesResponse, err error)
 	ModifyClusterNodePool(ctx context.Context, clusterID *string, nodePoolID *string, request *cs.ModifyClusterNodePoolRequest) (result *cs.ModifyClusterNodePoolResponse, err error)
+	UpgradeClusterNodepool(ctx context.Context,clusterID *string,nodePoolID *string,request *cs.UpgradeClusterNodepoolRequest) (result *cs.UpgradeClusterNodepoolResponse, err error)
 }
 
 type clustersClient struct {
@@ -114,4 +115,8 @@ func (cl *clustersClient) RemoveNodePoolNodes(ctx context.Context, clusterID *st
 
 func (cl *clustersClient) ModifyClusterNodePool(ctx context.Context, clusterID *string, nodePoolID *string, request *cs.ModifyClusterNodePoolRequest) (result *cs.ModifyClusterNodePoolResponse, err error) {
 	return cl.client.ModifyClusterNodePoolWithContext(ctx, clusterID, nodePoolID, request, map[string]*string{}, &util.RuntimeOptions{})
+}
+
+func (cl *clustersClient) UpgradeClusterNodepool(ctx context.Context,clusterID *string,nodePoolID *string,request *cs.UpgradeClusterNodepoolRequest) (result *cs.UpgradeClusterNodepoolResponse, err error) {
+    return cl.client.UpgradeClusterNodepoolWithContext(ctx,clusterID,nodePoolID,request,map[string]*string{},&util.RuntimeOptions{},)
 }
