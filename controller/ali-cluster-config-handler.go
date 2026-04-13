@@ -594,7 +594,7 @@ func (h *Handler) handleUpdateNodePools(
 		if !ok {
 			continue
 		}
-		// OS image update: do this separately from scaling changes
+		// OS image upgrade 
         if np.ImageID != "" && np.ImageID != unp.ImageID {
             logrus.Infof(
                 "Upgrading OS image for nodepool [%s] from [%s] to [%s]",
@@ -606,7 +606,6 @@ func (h *Handler) handleUpdateNodePools(
                 configSpec.ClusterID,
                 np.NodePoolID,
                 np.ImageID,
-                &np.UseReplace,
             )
             if err != nil {
                 failed = append(failed, fmt.Sprintf("nodepool %s os upgrade error: %s", np.Name, err.Error()))
@@ -692,7 +691,7 @@ func needsUpdate(desired []aliv1.AliNodePool, upstream map[string]aliv1.AliNodeP
 		if !ok {
 			continue
 		}
-		 // OS image drift
+		 // OS image mismatch
         if np.ImageID != "" && np.ImageID != unp.ImageID {
             return true
         }

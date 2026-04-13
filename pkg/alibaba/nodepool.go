@@ -295,13 +295,10 @@ func UpgradeNodePoolOS(
     clusterID string,
     nodePoolID string,
     imageID string,
-    useReplace *bool,
 ) error {
     req := &cs.UpgradeClusterNodepoolRequest{
         ImageId: tea.String(imageID),
-    }
-    if useReplace != nil {
-        req.UseReplace = useReplace
+		UseReplace: tea.Bool(true),
     }
 
     resp, err := client.UpgradeClusterNodepool(ctx, &clusterID, &nodePoolID, req)
@@ -311,5 +308,6 @@ func UpgradeNodePoolOS(
     if resp == nil || resp.Body == nil {
         return errors.New("received empty response from upgrade nodepool")
     }
+	logrus.Infof("upgrade nodepool, task ID: %s", tea.StringValue(resp.Body.TaskId))
     return nil
 }
